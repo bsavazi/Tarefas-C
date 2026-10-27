@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct no {
+    int dado;
+    struct no *prox;
+};
+
+struct pilha {
+    struct no *topo;
+};
+
+void criar(struct pilha *p) {
+    p->topo = NULL;
+}
+
+// coloca no topo
+void push(struct pilha *p, int x) {
+    struct no *novo = malloc(sizeof(struct no));
+    novo->dado = x;
+    novo->prox = p->topo;
+    p->topo = novo;
+}
+
+// tira do topo
+int pop(struct pilha *p) {
+    if (p->topo == NULL) {
+        printf("pilha vazia\n");
+        return -1;
+    }
+    struct no *aux = p->topo;
+    int x = aux->dado;
+    p->topo = aux->prox;
+    free(aux);
+    return x;
+}
+
+// só olha o topo, não tira
+int peek(struct pilha *p) {
+    if (p->topo == NULL) {
+        printf("pilha vazia\n");
+        return -1;
+    }
+    return p->topo->dado;
+}
+
+int main() {
+    struct pilha p;
+    criar(&p);
+
+    push(&p, 10);
+    push(&p, 20);
+    push(&p, 30);
+
+    printf("topo: %d\n", peek(&p));
+    printf("pop: %d\n", pop(&p));
+    printf("pop: %d\n", pop(&p));
+    printf("topo agora: %d\n", peek(&p));
+
+    return 0;
+}
