@@ -1,61 +1,59 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-struct no {
-    int dado;
-    struct no *prox;
-};
+typedef struct FILA {
+    float valor;
+    struct FILA *proximo;
+} Fila;
 
-struct pilha {
-    struct no *topo;
-};
+void push(Fila **f, int valor) {
+    Fila *novo;
 
-void criar(struct pilha *p) {
-    p->topo = NULL;
-}
-
-// coloca no topo
-void push(struct pilha *p, int x) {
-    struct no *novo = malloc(sizeof(struct no));
-    novo->dado = x;
-    novo->prox = p->topo;
-    p->topo = novo;
-}
-
-// tira do topo
-int pop(struct pilha *p) {
-    if (p->topo == NULL) {
-        printf("pilha vazia\n");
-        return -1;
+    novo = malloc(sizeof(Fila));
+    if(!novo) {
+        printf("Erro de alocação.\n");
+        exit(-1);
     }
-    struct no *aux = p->topo;
-    int x = aux->dado;
-    p->topo = aux->prox;
-    free(aux);
-    return x;
+    novo->valor = valor;
+    novo->proximo = *f;
+    *f = novo;
 }
 
-// só olha o topo, não tira
-int peek(struct pilha *p) {
-    if (p->topo == NULL) {
-        printf("pilha vazia\n");
-        return -1;
-    }
-    return p->topo->dado;
+int pop(Fila **f) {
+    Fila *p;
+    int val;
+
+    if(*f == NULL) return -99999;
+    p = *f;
+    *f = p->proximo;
+
+    val = p->valor;
+    free(p);
+    return val;
 }
 
-int main() {
-    struct pilha p;
-    criar(&p);
-
-    push(&p, 10);
-    push(&p, 20);
-    push(&p, 30);
-
-    printf("topo: %d\n", peek(&p));
-    printf("pop: %d\n", pop(&p));
-    printf("pop: %d\n", pop(&p));
-    printf("topo agora: %d\n", peek(&p));
-
-    return 0;
+int peek(Fila *f) {
+    if(f == NULL) return -99999;
+    return f->valor;
 }
+
+int main(){
+
+    Fila *pilha;
+
+    pilha = NULL;
+    push(&pilha, 10);
+    push(&pilha, 20);
+    push(&pilha, 30);
+
+    printf("Topo: %d\n", peek(pilha));
+    printf("Retirado: %d\n", pop(&pilha));
+    printf("Retirado: %d\n", pop(&pilha));
+
+    push(&pilha, 40);
+
+    while(pilha)
+        printf("Retirado: %d\n", pop(&pilha));
+}
+
